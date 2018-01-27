@@ -7,9 +7,10 @@ class Layout extends Component {
     render() {
         return (
             <React.Fragment>
-                <NavBar />
+                <NavBar 
+                    searchForm={this.props.searchForm}/>
                 <Container>
-                    MyApp
+                    {this.props.children}
                 </Container >
             </React.Fragment>
 

@@ -1,0 +1,10 @@
+.CardDescription{
+    height:4rem;
+    overflow: hidden;
+}
+
+.Img{
+    background-color: #ddd;
+    width:3rem !important;
+    height:4rem !important;
+}

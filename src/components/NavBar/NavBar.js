@@ -1,33 +1,67 @@
 import React, { Component } from 'react';
 
-import { Menu, Image, Header, Input } from 'semantic-ui-react';
+import { Menu, Image, Input, Responsive } from 'semantic-ui-react';
 import logo from '../../assets/images/logo.svg';
 
 class NavBar extends Component {
     render() {
         return (
-            <Menu borderless color='teal' inverted>
-                <Menu.Item>
-                    {/* <Header color='white' as='h4'>
-                        <Image size='mini' src={logo} />
-                        Readacity
-                    </Header> */}
-                    <Image size='mini' src={logo} />
-                    &nbsp;&nbsp;READACITY
-                </Menu.Item>
-
-                <Menu.Menu position='right' >
+            <React.Fragment>
+                <Menu borderless color='teal' inverted>
                     <Menu.Item>
+                        <Image size='mini' src={logo} />
+                        &nbsp;&nbsp;READACITY
+                </Menu.Item>
+                    <Menu.Menu position='right' >
+                        <Responsive
+                            as={Menu.Item}
+                            minWidth='601' >
+                            <form onSubmit={this.props.searchForm.submit}>
+                                <Input
+                                    onChange={this.props.searchForm.updateQuery}
+                                    value={this.props.searchForm.query}
+                                    icon='search'
+                                    placeholder='Search...' />
+                            </form>
+                        </Responsive>
+                        <Menu.Item as='a' name=' My Read' />
+                        <Menu.Item as='a' name=' My Search' />
+                    </Menu.Menu>
+                </Menu>
+                {/* <Responsive
+                    as={Menu}
+                    maxWidth='601'
+                    widths='1'
+                    borderless
+                    color='teal'
+                    inverted>
+                    <Menu.Item>
+                        <form onSubmit={this.props.searchForm.submit}>
+                            <Input
+                                onChange={this.props.searchForm.updateQuery}
+                                value={this.props.searchForm.query}
+                                icon='search'
+                                placeholder='Search...' />
+                        </form>
+                    </Menu.Item>
+                </Responsive> */}
+                <Responsive
+                    maxWidth='601'>
+                    <form 
+                        onSubmit={this.props.searchForm.submit}
+                        style={{margin:'0 1rem 1rem 1rem'}}
+                        >
                         <Input
+                            fluid
+                            onChange={this.props.searchForm.updateQuery}
+                            value={this.props.searchForm.query}
                             icon='search'
                             placeholder='Search...' />
-                    </Menu.Item>
-                    <Menu.Item as='a' name=' My Read' />
-                    <Menu.Item as='a' name=' My Search' />
+                    </form>
+                </Responsive>
 
-                </Menu.Menu>
+            </React.Fragment>
 
-            </Menu>
         );
     }
 }
