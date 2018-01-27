@@ -7,15 +7,11 @@ import { Card, Image, Icon } from 'semantic-ui-react';
 
 const BookCard = (props) => {
 
-    const cardDescription = props.description.substring(0, 200);
-
     return (
         <Card>
             <Card.Content>
-
                 <Image className={classes.Img} bordered floated='right' size='mini' inline src={props.imageURL} />
                 <Card.Header>
-
                     {props.title}
                 </Card.Header>
                 <Card.Meta>

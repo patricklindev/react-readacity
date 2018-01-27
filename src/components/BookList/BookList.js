@@ -8,10 +8,10 @@ import { Card, Responsive } from 'semantic-ui-react';
 
 const BookList = (props) => {
     let books;
-
     if (props.books.length > 0) {
         books = props.books.map(book => {
             return <BookCard
+                key={book.id}
                 imageURL={book.imageLinks ? book.imageLinks.smallThumbnail : 'https://dummyimage.com/300x400/ddd/fff.png&text=x'}
                 title={book.title ? book.title : ''}
                 authors={book.authors ? book.authors.join(', ') : ''}
@@ -20,6 +20,9 @@ const BookList = (props) => {
             />
         })
     }
+
+    let showText;
+
 
 
     return (
@@ -50,7 +53,6 @@ const BookList = (props) => {
                 itemsPerRow='1'>
                 {books}
             </Responsive>
-
         </React.Fragment>
         // <Card.Group className={classes.BookList} itemsPerRow='4' >
         //     {books}
