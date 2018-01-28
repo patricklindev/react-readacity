@@ -22,10 +22,11 @@ class Layout extends Component {
                     }}
                     >
                     <NavBar
+                        isLoading={this.props.isLoading}
                         searchForm={this.props.searchForm} />
                 </Sticky>
 
-                <Container style={{ paddingTop: '1em' }}>
+                <Container style={{ paddingTop: '1em', minHeight:'60vh'}}>
                     {this.props.children}
                 </Container >
             </div>

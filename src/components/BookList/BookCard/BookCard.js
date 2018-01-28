@@ -9,7 +9,7 @@ const BookCard = (props) => {
 
     return (
         <Card>
-            <Card.Content>
+            <Card.Content style={{height:'9.9rem',overflow:'hidden'}}>
                 <Image className={classes.Img} bordered floated='right' size='mini' inline src={props.imageURL} />
                 <Card.Header>
                     {props.title}
@@ -21,7 +21,7 @@ const BookCard = (props) => {
                         {props.publishedDate}
                     </span>
                 </Card.Meta>
-                <Card.Description className={classes.CardDescription}>
+                <Card.Description>
                     {props.description}
                 </Card.Description>
             </Card.Content>

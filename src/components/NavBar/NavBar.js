@@ -21,15 +21,19 @@ class NavBar extends Component {
                                 <Input
                                     onChange={this.props.searchForm.updateQuery}
                                     value={this.props.searchForm.query}
-                                    icon='search'
+                                    action={{
+                                        icon:'search',
+                                        loading:this.props.isLoading,
+                                        inverted:true
+                                        }}
                                     placeholder='Search...' />
                             </form>
                         </Responsive>
                         <Menu.Item as={Link} 
-                            to='/myread'
+                            to='/'
                             name=' My Read' />
                         <Menu.Item as={Link}
-                            to='/mysearch'
+                            to='/search'
                             name=' My Search' />
                     </Menu.Menu>
                 </Menu>
@@ -54,5 +58,7 @@ class NavBar extends Component {
         );
     }
 }
+
+
 
 export default NavBar;

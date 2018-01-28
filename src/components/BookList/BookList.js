@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classes from './BookList.css';
 import BookCard from './BookCard/BookCard';
 import { Card, Responsive } from 'semantic-ui-react';
+import { BookIdentifier } from '../../constant/Identifiers';
 
 
 const BookList = (props) => {
@@ -11,19 +12,17 @@ const BookList = (props) => {
     if (props.books.length > 0) {
         books = props.books.map(book => {
             return <BookCard
-                key={book.id}
-                imageURL={book.imageLinks ? book.imageLinks.smallThumbnail : 'https://dummyimage.com/300x400/ddd/fff.png&text=x'}
-                title={book.title ? book.title : ''}
-                authors={book.authors ? book.authors.join(', ') : ''}
-                publishedDate={book.publishedDate ? book.publishedDate : ''}
-                description={book.description ? book.description : ''}
+                key={book[BookIdentifier.ID]}
+                imageURL={book[BookIdentifier.A_IMGLINKS] ? book[BookIdentifier.A_IMGLINKS][BookIdentifier.B_THUMBNAIL] : 'https://dummyimage.com/300x400/ddd/fff.png&text=x'}
+                title={book[BookIdentifier.A_TITLE] ? book[BookIdentifier.A_TITLE] : ''}
+                authors={book[BookIdentifier.A_AUTHORS] ? book[BookIdentifier.A_AUTHORS].join(', ') : ''}
+                publishedDate={book[BookIdentifier.A_PUBLISHEDDATE] ? book[BookIdentifier.A_PUBLISHEDDATE] : ''}
+                description={book[BookIdentifier.A_DESCRIPTION] ? book[BookIdentifier.A_DESCRIPTION] : ''}
             />
         })
     }
 
     let showText;
-
-
 
     return (
         <React.Fragment>
@@ -54,14 +53,14 @@ const BookList = (props) => {
                 {books}
             </Responsive>
         </React.Fragment>
-        // <Card.Group className={classes.BookList} itemsPerRow='4' >
-        //     {books}
-        // </Card.Group>
     );
 }
 
 BookList.propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.object,
+    ]),
 }
 
 export default BookList
