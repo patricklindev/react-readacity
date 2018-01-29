@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import * as BooksAPI from '../../BooksAPI';
 import BookList from '../../components/BookList/BookList';
 import { BookIdentifier } from '../../constant/Identifiers';
-import { Menu, Segment, Input, Dimmer, Loader } from 'semantic-ui-react';
-
+import { Menu, Segment, Dimmer, Loader } from 'semantic-ui-react';
+import sortBy from 'sort-by';
 
 class MainPage extends Component {
 
@@ -14,28 +14,20 @@ class MainPage extends Component {
         read: null,
         activeItem: 'Reading',
         isLoading: false,
-    }
-
-    componentWillMount() {
-        if (this.state.currentlyReading === null) {
-            const myBook = localStorage.getItem('myBook')
-            if (myBook) {
-                this.setState({
-                    ...this.filterBookShelf(JSON.parse(myBook))
-                })
-            }
-        }
+        isUpdating: false,
     }
 
     componentDidMount() {
+        // console.log('[MainPage] didMount');
         if (this.state.currentlyReading === null) {
+            this.setState({ isLoading: true });
             BooksAPI.getAll()
                 .catch(err => {
                     console.log(err);
                 })
                 .then(books => {
-                    if (books) {
-                        localStorage.setItem('myBook', JSON.stringify(books));
+                    if (books instanceof Array) {
+                        // localStorage.setItem('myBook', JSON.stringify(books));
                         this.setState({
                             isLoading: false,
                             ...this.filterBookShelf(books)
@@ -58,38 +50,82 @@ class MainPage extends Component {
         const read = books.filter(book => book[BookIdentifier.A_SHELF] === 'read');
 
         return {
-            currentlyReading,
-            wantToRead,
-            read
+            currentlyReading: currentlyReading.sort(sortBy(BookIdentifier.A_TITLE)),
+            wantToRead: wantToRead.sort(sortBy(BookIdentifier.A_TITLE)),
+            read: read.sort(sortBy(BookIdentifier.A_TITLE))
         }
     }
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleAddtoClick = (id, shelf) => {
+        this.setState({
+            isLoading: true,
+        });
+        BooksAPI.update(id, shelf)
+            .catch(err => {
+                console.error(err);
+                this.setState({
+                    isLoading: false,
+                });
+            })
+            .then((data) => {
+                // console.log(data);
+                BooksAPI.getAll()
+                    .catch(err => {
+                        console.error(err);
+                        this.setState({
+                            isLoading: false,
+                        });
+                    })
+                    .then(books => {
+                        console.log('getbooks');
+                        if (books) {
+                            localStorage.setItem('myBook', JSON.stringify(books));
+                            this.setState({
+                                isLoading: false,
+                                ...this.filterBookShelf(books)
+                            })
+                        } else {
+                            console.error('error:can not get books from API');
+                            this.setState({
+                                isLoading: false,
+                            })
+                        }
+                    });
+            })
+    }
+
+    handleShelfClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() {
         const { activeItem } = this.state
 
         let activeList;
 
-        if (this.state.isLoading || !this.state.currentlyReading) {
+        if (this.state.isLoading || this.state.currentlyReading === null) {
             activeList = (
-                <div style={{ minHeight: '50vh' }}>
                     <Dimmer active inverted >
                         <Loader inverted>Loading</Loader>
                     </Dimmer>
-                </div>
-
             );
         } else {
             switch (activeItem) {
                 case 'Reading':
-                    activeList = <BookList books={this.state.currentlyReading} />
+                    activeList =
+                        <BookList
+                            books={this.state.currentlyReading}
+                            btnClick={this.handleAddtoClick} />
                     break;
                 case 'Wishlist':
-                    activeList = <BookList books={this.state.wantToRead} />
+                    activeList =
+                        <BookList
+                            books={this.state.wantToRead}
+                            btnClick={this.handleAddtoClick} />
                     break;
                 case 'Read':
-                    activeList = <BookList books={this.state.read} />
+                    activeList =
+                        <BookList
+                            books={this.state.read}
+                            btnClick={this.handleAddtoClick} />
                     break;
 
                 default:
@@ -103,17 +139,12 @@ class MainPage extends Component {
         return (
             <div>
                 <Menu attached='top' tabular>
-                    <Menu.Item name='Reading' active={activeItem === 'Reading'} onClick={this.handleItemClick} />
-                    <Menu.Item name='Wishlist' active={activeItem === 'Wishlist'} onClick={this.handleItemClick} />
-                    <Menu.Item name='Read' active={activeItem === 'Read'} onClick={this.handleItemClick} />
-                    <Menu.Menu position='right'>
-                        <Menu.Item>
-                            <Input transparent icon={{ name: 'search', link: true }} placeholder='Search users...' />
-                        </Menu.Item>
-                    </Menu.Menu>
+                    <Menu.Item name='Reading' active={activeItem === 'Reading'} onClick={this.handleShelfClick} />
+                    <Menu.Item name='Wishlist' active={activeItem === 'Wishlist'} onClick={this.handleShelfClick} />
+                    <Menu.Item name='Read' active={activeItem === 'Read'} onClick={this.handleShelfClick} />
                 </Menu>
 
-                <Segment attached='bottom' >
+                <Segment attached='bottom' style={{minHeight:'16rem'}}>
                     {activeList}
                 </Segment>
             </div>

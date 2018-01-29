@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 
 import { Menu, Image, Input, Responsive} from 'semantic-ui-react';
 import logo from '../../assets/images/logo.svg';
+import PropTypes from 'prop-types';
 
 class NavBar extends Component {
     render() {
@@ -19,6 +20,7 @@ class NavBar extends Component {
                             minWidth='601' >
                             <form onSubmit={this.props.searchForm.submit}>
                                 <Input
+                                    required
                                     onChange={this.props.searchForm.updateQuery}
                                     value={this.props.searchForm.query}
                                     action={{
@@ -57,6 +59,15 @@ class NavBar extends Component {
 
         );
     }
+}
+
+NavBar.propTypes={
+    searchForm:PropTypes.shape({
+        query:PropTypes.string.isRequired,
+        updateQuery:PropTypes.func.isRequired,
+        submit:PropTypes.func.isRequired
+    }),
+    isLoading:PropTypes.bool
 }
 
 

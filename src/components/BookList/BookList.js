@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import classes from './BookList.css';
 import BookCard from './BookCard/BookCard';
 import { Card, Responsive } from 'semantic-ui-react';
 import { BookIdentifier } from '../../constant/Identifiers';
@@ -9,20 +8,24 @@ import { BookIdentifier } from '../../constant/Identifiers';
 
 const BookList = (props) => {
     let books;
-    if (props.books.length > 0) {
+    if (props.books instanceof Array) {
         books = props.books.map(book => {
-            return <BookCard
-                key={book[BookIdentifier.ID]}
-                imageURL={book[BookIdentifier.A_IMGLINKS] ? book[BookIdentifier.A_IMGLINKS][BookIdentifier.B_THUMBNAIL] : 'https://dummyimage.com/300x400/ddd/fff.png&text=x'}
-                title={book[BookIdentifier.A_TITLE] ? book[BookIdentifier.A_TITLE] : ''}
-                authors={book[BookIdentifier.A_AUTHORS] ? book[BookIdentifier.A_AUTHORS].join(', ') : ''}
-                publishedDate={book[BookIdentifier.A_PUBLISHEDDATE] ? book[BookIdentifier.A_PUBLISHEDDATE] : ''}
-                description={book[BookIdentifier.A_DESCRIPTION] ? book[BookIdentifier.A_DESCRIPTION] : ''}
-            />
+            return (
+                <BookCard
+                    key={book[BookIdentifier.A_ID]}
+                    id={book[BookIdentifier.A_ID]}
+                    imageURL={book[BookIdentifier.A_IMGLINKS] ? book[BookIdentifier.A_IMGLINKS][BookIdentifier.B_THUMBNAIL] : 'https://dummyimage.com/300x400/ddd/fff.png&text=x'}
+                    title={book[BookIdentifier.A_TITLE] ? book[BookIdentifier.A_TITLE] : ''}
+                    authors={book[BookIdentifier.A_AUTHORS] ? book[BookIdentifier.A_AUTHORS].join(', ') : ''}
+                    publishedDate={book[BookIdentifier.A_PUBLISHEDDATE] ? book[BookIdentifier.A_PUBLISHEDDATE] : ''}
+                    description={book[BookIdentifier.A_DESCRIPTION] ? book[BookIdentifier.A_DESCRIPTION] : ''}
+                    btnClick={props.btnClick}
+                />
+            );
         })
+    } else {
+        console.error('error:' + props.books)
     }
-
-    let showText;
 
     return (
         <React.Fragment>
@@ -57,10 +60,12 @@ const BookList = (props) => {
 }
 
 BookList.propTypes = {
-    books: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object,
-    ]),
+    // books: PropTypes.oneOfType([
+    //     PropTypes.array,
+    //     PropTypes.object,
+    // ]),
+    books: PropTypes.array.isRequired,
+    btnClick: PropTypes.func.isRequired
 }
 
 export default BookList

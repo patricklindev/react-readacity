@@ -1,81 +1,76 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import sortBy from 'sort-by';
 
 import Layout from './containers/Layout/Layout';
-import * as BooksAPI from './BooksAPI';
-import BookList from './components/BookList/BookList';
-import SearchList from './components/SearchList/SearchList';
+import SearchPage from './containers/SearchPage/SearchPage';
 import MainPage from './containers/MainPage/MainPage';
+import * as BooksAPI from './BooksAPI';
+import { BookIdentifier } from './constant/Identifiers';
+
 class App extends Component {
-  state = {
-    isLoading:false,
-    query: '',
-    searchResult: [],
-    searchHistory: [],
-    getAll:[]
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false,
+      query: localStorage.getItem('query') ? localStorage.getItem('query') : '',
+      searchResult: localStorage.getItem('searchResult') ? JSON.parse(localStorage.getItem('searchResult')) : null,
+    };
   }
 
-  // componentWillMount() {
-  //   console.log('app will mount');
-  //   BooksAPI.get('sJf1vQAACAAJ')
-  //     .then(data=>{
-  //       console.log(data);
-  //     });
+  /* handle for SearchPage > BookList > BookCard btnAddTo clicked */
+  handleAddtoClick = (id, shelf) => {
+    this.setState({
+      isLoading: true,
+    });
+    BooksAPI.update(id, shelf)
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          isLoading: false,
+        });
+      })
+      .then((data) => {
+        this.setState({
+          isLoading: false,
+        });
+      })
+  }
 
-  //   this.setState({
-  //     query: localStorage.getItem('query') ? localStorage.getItem('query') : '',
-  //     searchResult: localStorage.getItem('searchResult') ? JSON.parse(localStorage.getItem('searchResult')) : [],
-  //     searchHistory: localStorage.getItem('searchHistory') ? JSON.parse(localStorage.getItem('searchHistory')) : [],
-  //   })
-  // }
-
-  updateQuery = (value) => {
+  /* handle for NavBar > Input onChange */
+  handlerUpdateQuery = (value) => {
     localStorage.setItem('query', value);
     this.setState({
       query: value
     });
   };
 
-  querySubmit = (event) => {
+  /* handle for NavBar > form onSubmit */
+  handlerQuerySubmit = (event) => {
     event.preventDefault();
-    this.setState({isLoading:true})
-
-    const submitQuery = this.state.query;
-    const submitHistory = [...this.state.searchHistory];
+    this.setState({ isLoading: true })
     BooksAPI.search(this.state.query)
       .catch(error => {
         console.log(error);
-        this.setState({isLoading:false})
+        this.setState({ isLoading: false })
       })
       .then(data => {
-        localStorage.setItem('searchResult', JSON.stringify(data));
-
-        if (data.length > 0) {
-
-          if (submitHistory.length === 3) {
-            submitHistory.shift()
-          }
-          submitHistory.push({
-            query: submitQuery,
-            result: data
-          });
-
-          localStorage.setItem('searchHistory', JSON.stringify(submitHistory));
-
+        if (data instanceof Array) {
+          data.sort(sortBy(BookIdentifier.A_TITLE));
+          localStorage.setItem('searchResult', JSON.stringify(data));
           this.setState({
-            isLoading:false,
+            isLoading: false,
             searchResult: data,
-            searchHistory: submitHistory
           });
         } else {
+          localStorage.setItem('searchResult', '[]');
           this.setState({
-            isLoading:false,
-            searchResult: data
+            isLoading: false,
+            searchResult: []
           })
         }
-
         this.props.history.push('/search');
-
       });
   }
 
@@ -83,19 +78,25 @@ class App extends Component {
   render() {
     const searchForm = {
       query: this.state.query,
-      updateQuery: (event) => this.updateQuery(event.target.value),
-      submit: (event) => this.querySubmit(event)
+      updateQuery: (event) => this.handlerUpdateQuery(event.target.value),
+      submit: (event) => this.handlerQuerySubmit(event)
     }
+
+    const pageSearch = (
+      <SearchPage
+        isLoading={this.state.isLoading}
+        btnClick={this.handleAddtoClick}
+        query={this.state.query}
+        books={this.state.searchResult} />);
 
     return (
       <Layout
         isLoading={this.state.isLoading}
         searchForm={searchForm}>
-        {/* <Route path='/search' exact render={() =>
-          <BookList
-            query={this.state.query}
-            books={this.state.searchResult} />} /> */}
-        <Route path='/' exact component={MainPage} />
+        <Switch>
+          <Route path='/search' render={() => pageSearch} />
+          <Route path='/' component={MainPage} />
+        </Switch>
       </Layout>
     );
   }

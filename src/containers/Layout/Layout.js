@@ -4,6 +4,7 @@ import { Container, Sticky } from 'semantic-ui-react';
 import NavBar from '../../components/NavBar/NavBar';
 
 class Layout extends Component {
+    
     state = {}
 
     handleContextRef = (contextRef) => {
@@ -34,5 +35,6 @@ class Layout extends Component {
         );
     }
 }
+
 
 export default Layout;
