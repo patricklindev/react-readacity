@@ -60,10 +60,6 @@ const BookList = (props) => {
 }
 
 BookList.propTypes = {
-    // books: PropTypes.oneOfType([
-    //     PropTypes.array,
-    //     PropTypes.object,
-    // ]),
     books: PropTypes.array.isRequired,
     btnClick: PropTypes.func.isRequired
 }

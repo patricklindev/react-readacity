@@ -17,6 +17,26 @@ class MainPage extends Component {
         isUpdating: false,
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+
+        if (this.state.currentlyReading !== nextState.currentlyReading ||
+            this.state.wantToRead !== nextState.wantToRead ||
+            this.state.read !== nextState.read ||
+            this.state.activeItem !== nextState.activeItem ||
+            this.state.isLoading !== nextState.isLoading ||
+            this.state.isUpdating !== nextState.isUpdating) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    // componentWillUpdate() {
+    //     console.log('[MainPage] will update');
+    // }
+
+
     componentDidMount() {
         // console.log('[MainPage] didMount');
         if (this.state.currentlyReading === null) {
@@ -77,9 +97,8 @@ class MainPage extends Component {
                         });
                     })
                     .then(books => {
-                        console.log('getbooks');
                         if (books) {
-                            localStorage.setItem('myBook', JSON.stringify(books));
+                            // localStorage.setItem('myBook', JSON.stringify(books));
                             this.setState({
                                 isLoading: false,
                                 ...this.filterBookShelf(books)
@@ -97,15 +116,17 @@ class MainPage extends Component {
     handleShelfClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() {
+        // console.log('[MainPage] render')
+
         const { activeItem } = this.state
 
         let activeList;
 
         if (this.state.isLoading || this.state.currentlyReading === null) {
             activeList = (
-                    <Dimmer active inverted >
-                        <Loader inverted>Loading</Loader>
-                    </Dimmer>
+                <Dimmer active inverted >
+                    <Loader inverted>Loading</Loader>
+                </Dimmer>
             );
         } else {
             switch (activeItem) {
@@ -127,7 +148,6 @@ class MainPage extends Component {
                             books={this.state.read}
                             btnClick={this.handleAddtoClick} />
                     break;
-
                 default:
                     break;
             }
@@ -144,7 +164,7 @@ class MainPage extends Component {
                     <Menu.Item name='Read' active={activeItem === 'Read'} onClick={this.handleShelfClick} />
                 </Menu>
 
-                <Segment attached='bottom' style={{minHeight:'16rem'}}>
+                <Segment attached='bottom' style={{ minHeight: '16rem' }}>
                     {activeList}
                 </Segment>
             </div>

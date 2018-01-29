@@ -4,30 +4,36 @@ import { Container, Sticky } from 'semantic-ui-react';
 import NavBar from '../../components/NavBar/NavBar';
 
 class Layout extends Component {
-    
+
     state = {}
+
+
+    // componentWillUpdate() {
+    //     console.log('[Layout] will update');
+    // }
 
     handleContextRef = (contextRef) => {
         this.setState({ contextRef });
     }
 
+
     render() {
         const { contextRef } = this.state
         return (
             <div ref={this.handleContextRef}>
-                <Sticky 
-                    context={contextRef} 
+                <Sticky
+                    context={contextRef}
                     style={{
-                        zIndex:'1000',
-                        position:'relative'
+                        zIndex: '1000',
+                        position: 'relative'
                     }}
-                    >
+                >
                     <NavBar
                         isLoading={this.props.isLoading}
                         searchForm={this.props.searchForm} />
                 </Sticky>
 
-                <Container style={{ paddingTop: '1em', minHeight:'60vh'}}>
+                <Container style={{ paddingTop: '1em', minHeight: '60vh' }}>
                     {this.props.children}
                 </Container >
             </div>

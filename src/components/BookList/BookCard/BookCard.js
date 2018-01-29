@@ -52,7 +52,8 @@ BookCard.propTypes = {
     title: PropTypes.string.isRequired,
     authors: PropTypes.string.isRequired,
     publishedDate: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired
+    description: PropTypes.string.isRequired,
+    btnClick:PropTypes.func.isRequired
 }
 
 export default BookCard;

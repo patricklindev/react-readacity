@@ -15,7 +15,8 @@ class App extends Component {
     this.state = {
       isLoading: false,
       query: localStorage.getItem('query') ? localStorage.getItem('query') : '',
-      searchResult: localStorage.getItem('searchResult') ? JSON.parse(localStorage.getItem('searchResult')) : null,
+      searchResult: localStorage.getItem('searchResult') ? JSON.parse(localStorage.getItem('searchResult')).result : null,
+      searchQuery:localStorage.getItem('searchResult') ? JSON.parse(localStorage.getItem('searchResult')).query : null,
     };
   }
 
@@ -38,7 +39,7 @@ class App extends Component {
       })
   }
 
-  /* handle for NavBar > Input onChange */
+  /* handle for Layout > NavBar > Input onChange */
   handlerUpdateQuery = (value) => {
     localStorage.setItem('query', value);
     this.setState({
@@ -50,7 +51,8 @@ class App extends Component {
   handlerQuerySubmit = (event) => {
     event.preventDefault();
     this.setState({ isLoading: true })
-    BooksAPI.search(this.state.query)
+    const query = this.state.query;
+    BooksAPI.search(query)
       .catch(error => {
         console.log(error);
         this.setState({ isLoading: false })
@@ -58,16 +60,18 @@ class App extends Component {
       .then(data => {
         if (data instanceof Array) {
           data.sort(sortBy(BookIdentifier.A_TITLE));
-          localStorage.setItem('searchResult', JSON.stringify(data));
+          localStorage.setItem('searchResult', JSON.stringify({query,result:data}));
           this.setState({
             isLoading: false,
             searchResult: data,
+            searchQuery:query
           });
         } else {
-          localStorage.setItem('searchResult', '[]');
+          localStorage.setItem('searchResult', JSON.stringify({query,result:[]}));
           this.setState({
             isLoading: false,
-            searchResult: []
+            searchResult: [],
+            searchQuery:query
           })
         }
         this.props.history.push('/search');
@@ -86,7 +90,7 @@ class App extends Component {
       <SearchPage
         isLoading={this.state.isLoading}
         btnClick={this.handleAddtoClick}
-        query={this.state.query}
+        searchQuery={this.state.searchQuery}
         books={this.state.searchResult} />);
 
     return (
