@@ -19,6 +19,7 @@ const BookList = (props) => {
                     authors={book[BookIdentifier.A_AUTHORS] ? book[BookIdentifier.A_AUTHORS].join(', ') : ''}
                     publishedDate={book[BookIdentifier.A_PUBLISHEDDATE] ? book[BookIdentifier.A_PUBLISHEDDATE] : ''}
                     description={book[BookIdentifier.A_DESCRIPTION] ? book[BookIdentifier.A_DESCRIPTION] : ''}
+                    shelf={book[BookIdentifier.A_SHELF]?book[BookIdentifier.A_SHELF]:''}
                     btnClick={props.btnClick}
                 />
             );

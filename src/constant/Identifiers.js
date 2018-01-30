@@ -5,7 +5,7 @@ export const BookIdentifier = {
     A_PUBLISHEDDATE:'publishedDate',
     A_ID:'id',
     A_DESCRIPTION:'description',
-    A_AUTHORS:'authors',
+    A_AUTHORS:'authors', 
+    A_SHELF:'shelf',
     B_THUMBNAIL:'smallThumbnail',
-    A_SHELF:'shelf'
 };

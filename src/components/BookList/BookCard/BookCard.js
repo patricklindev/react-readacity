@@ -1,10 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Card, Image, Dropdown } from 'semantic-ui-react';
+import { Card, Image, Dropdown, Icon } from 'semantic-ui-react';
 
 
 const BookCard = (props) => {
+    let shelfMark = null;
+    switch (props.shelf) {
+        case 'currentlyReading':
+            shelfMark = (<Icon name='bookmark' size='big' color='teal' />);
+            break;
+        case 'wantToRead':
+            shelfMark = (<Icon name='empty heart' size='big' color='teal' />);
+            break;
+        case 'read':
+            shelfMark = (<Icon name='remove bookmark' size='big' color='teal' />);
+            break;
+        default:
+            break;
+    }
 
     return (
         <Card>
@@ -31,14 +45,16 @@ const BookCard = (props) => {
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>
-
+                {shelfMark}
                 <Dropdown text='Add to' labeled button icon='add to cart' className='right floated icon teal'>
+
                     <Dropdown.Menu>
-                        <Dropdown.Header icon='tags' content='SHELF' />
+                        <Dropdown.Header icon={{ name: 'tag', size: 'large', }} content='SHELF' />
                         <Dropdown.Divider />
-                        <Dropdown.Item onClick={() => props.btnClick(props.id, 'currentlyReading')} text='Reading' />
-                        <Dropdown.Item onClick={() => props.btnClick(props.id, 'wantToRead')} text='Wishlist' />
-                        <Dropdown.Item onClick={() => props.btnClick(props.id, 'read')} text='Read' />
+                        <Dropdown.Item selected={props.shelf==='currentlyReading'} disabled={props.shelf==='currentlyReading'} onClick={() => props.btnClick(props.id, 'currentlyReading')} text='Reading' icon={{ name: 'bookmark', color: 'teal' }} />
+                        <Dropdown.Item selected={props.shelf==='wantToRead'} disabled={props.shelf==='wantToRead'} onClick={() => props.btnClick(props.id, 'wantToRead')} text='Wishlist' icon={{ name: 'empty heart', color: 'teal' }} />
+                        <Dropdown.Item selected={props.shelf==='read'} disabled={props.shelf==='read'} onClick={() => props.btnClick(props.id, 'read')} text='Read' icon={{ name: 'remove bookmark', color: 'teal' }} />
+                        <Dropdown.Item disabled={props.shelf==='none'} onClick={() => props.btnClick(props.id, 'none')} text='Remove' icon={{ name: 'delete', color: 'red' }} />
                     </Dropdown.Menu>
                 </Dropdown>
 
@@ -53,7 +69,8 @@ BookCard.propTypes = {
     authors: PropTypes.string.isRequired,
     publishedDate: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    btnClick:PropTypes.func.isRequired
+    btnClick: PropTypes.func.isRequired,
+    shelf: PropTypes.string.isRequired
 }
 
 export default BookCard;
